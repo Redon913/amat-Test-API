@@ -3,7 +3,7 @@ class ErrorService {
 
 
     static randomNum(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        return Math.floor(Math.random() * (max - min + 1)) + min;;
     }
 
 
@@ -23,18 +23,18 @@ class ErrorService {
 
     static simulateExpiredToken() {
         if (this.randomNum(1, 6) === 5) {
-            throw new SecurityError("You are logged out you need to relogin!");
+            throw new _SecurityError("You are logged out you need to relogin!");
         }
     }
 
 
     static throwOutOfStockError(fruit) {
-        throw new OutOfStockError(`we are out of ${fruit}`);
+        throw new _OutOfStockError(`we are out of ${fruit}`);
     }
 }
 
 
-class OutOfStockError extends Error {
+class _OutOfStockError extends Error {
     constructor(...params) {
         super(...params);
 
@@ -44,7 +44,7 @@ class OutOfStockError extends Error {
 }
 
 
-class SecurityError extends Error {
+class _SecurityError extends Error {
     constructor(...params) {
         super(...params);
 

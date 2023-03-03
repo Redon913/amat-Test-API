@@ -1,3 +1,4 @@
+
 const express = require("express");
 const FruitService = require("./fruit-service");
 
@@ -11,25 +12,38 @@ class FruitRoutes {
     static setup(root) {
         const fruitRouter = express.Router();
 
+        fruitRouter.get('/getAllFruits', function (req, res) {
+            FruitService.getAllFruits()
+                .then(rs => res.json(rs))
+                .catch(err => res.send(err.message))
+        })
 
-        /**
-         * TODO-2 - need to expose an api that allows a caller to get a list of all fruits in the system
-         *  @requirements use the @FruitService methods to interact with the fruit inventory
-         *  @notes remember all methods are @see async on the FruitService
-         */
-
-
-        /**
-         * TODO-3 - need to expose an api that allows a caller to get a specific fruit in the system
-         *  @requirements use the @FruitService methods to interact with the fruit inventory
-         *  @requirements take consideration when fruit does not exist
-         *  @notes remember all methods are @see async on the FruitService
-         */
+        fruitRouter.get('/getFruit/:fruit', (req, res) => {
+            let fruitName = req.params.fruit;
+            FruitService.getFruit(fruitName)
+                .then(rs => {
+                    if (!rs) {
+                        throw new _FruitNotExists('No such fruit exists.');
+                    }
+                    res.json(rs);
+                })
+                .catch(err => {
+                    res.sendStatus(err.statusCode);
+                })
+        })
 
 
         root.use(fruitRouter);
     }
 }
 
+class _FruitNotExists extends Error {
+    constructor(...params) {
+        super(...params);
+
+        this.name = 'FruitNotExists';
+        this.statusCode = 404;
+    }
+}
 
 module.exports = FruitRoutes;
