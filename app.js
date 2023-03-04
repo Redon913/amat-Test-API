@@ -1,9 +1,22 @@
 const express = require("express");
+const cors = require('cors')
 const FruitRoutes = require("./fruit-routes");
 const bodyParser = require("body-parser");
 
 
+var whitelist = ['http://localhost:4200']
+var corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+}
+
 const app = express();
+
 const port = process.env.PORT || 1234;
 
 
@@ -18,8 +31,7 @@ FruitRoutes.setup(apiRoutes);
 
 
 // TODO-4: need to setup route for cart purchase
-
-
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 

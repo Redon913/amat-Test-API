@@ -1,5 +1,6 @@
 
 const express = require("express");
+const CartService = require("./cart-service");
 const FruitService = require("./fruit-service");
 
 
@@ -15,8 +16,15 @@ class FruitRoutes {
         fruitRouter.get('/getAllFruits', function (req, res) {
             FruitService.getAllFruits()
                 .then(rs => res.json(rs))
-                .catch(err => res.send(err.message))
-        })
+                .catch(err => {
+                    res.json({
+                        error: {
+                            name: err.name,
+                            message: err.message,
+                        },
+                    });
+                })
+        });
 
         fruitRouter.get('/getFruit/:fruit', (req, res) => {
             let fruitName = req.params.fruit;
@@ -28,10 +36,36 @@ class FruitRoutes {
                     res.json(rs);
                 })
                 .catch(err => {
-                    res.sendStatus(err.statusCode);
+                    res.json({
+                        error: {
+                            name: err.name,
+                            message: err.message,
+                        },
+                    });
                 })
-        })
+        });
 
+        fruitRouter.post('/checkout', (req, res) => {
+            const param = req.body;
+            CartService.purchase(param)
+                .then(rs => {
+                    if (!rs) {
+                        throw new _InsufficientBalance('Your Bill Amount Excided your Wallet Balance.');
+                    }
+                    console.log(rs);
+                    res.json(rs);
+                })
+                .catch(err => {
+
+                    res.json({
+                        error: {
+                            name: err.name,
+                            message: err.message,
+                        },
+                    })
+                    console.log(err.name, err.message);
+                })
+        });
 
         root.use(fruitRouter);
     }
@@ -42,6 +76,15 @@ class _FruitNotExists extends Error {
         super(...params);
 
         this.name = 'FruitNotExists';
+        this.statusCode = 404;
+    }
+}
+
+class _InsufficientBalance extends Error {
+    constructor(...params) {
+        super(...params);
+
+        this.name = 'InsufficientBalance';
         this.statusCode = 404;
     }
 }
