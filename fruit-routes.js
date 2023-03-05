@@ -52,7 +52,6 @@ class FruitRoutes {
                     if (!rs) {
                         throw new _InsufficientBalance('Your Bill Amount Excided your Wallet Balance.');
                     }
-                    console.log(rs);
                     res.json(rs);
                 })
                 .catch(err => {
@@ -63,7 +62,6 @@ class FruitRoutes {
                             message: err.message,
                         },
                     })
-                    console.log(err.name, err.message);
                 })
         });
 

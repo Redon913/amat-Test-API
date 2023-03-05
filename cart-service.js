@@ -73,7 +73,7 @@ class CartService {
 
 
             // add to the bill the price of the fruit times the pieces of fruit requested
-            billAmount = billAmount + fruit.price * value;
+            billAmount = billAmount + fruit.price * value + fruit.price * value * 0.18;
         }
 
 
